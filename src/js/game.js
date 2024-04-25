@@ -1,16 +1,17 @@
 import '../css/style.css';
-import {Actor, Engine, Font, Label, vec} from "excalibur";
+import {Actor, Engine, Font, Label, Vector} from "excalibur";
 import {ResourceLoader, Resources} from './resources.js';
 
 export class Game extends Engine {
 
     score = 0;
     scoreLabel;
+    isMole;
 
     constructor() {
         super({
-            width: 800,
-            height: 600,
+            width: 1024,
+            height: 720,
         });
         this.start(ResourceLoader).then(() => this.startGame());
     }
@@ -20,7 +21,7 @@ export class Game extends Engine {
 
         this.scoreLabel = new Label({
             text: 'Score: 0',
-            pos: vec(this.drawWidth / 2, 25),
+            pos: new Vector(this.drawWidth / 2, 25),
             font: new Font({ size: 30 }),
         });
         this.add(this.scoreLabel);
@@ -28,20 +29,16 @@ export class Game extends Engine {
 
     startGame() {
         console.log("start de game!");
-
-        setInterval(() => {
-            this.spawnPile();
-        }, 500);
+        this.clock.schedule(() => this.spawnPile(), 500);
     }
 
     spawnPile() {
-        const isMole = Math.random() > 0.5;
-
         const pile = new Actor();
         this.add(pile);
-        pile.on('pointerdown', (evt) => this.handlePointerDown(pile, isMole));
-
-        switch (isMole) {
+        pile.on('pointerdown', (event) => this.handlePointerDown(event));
+        
+        this.isMole = Math.random() > 0.5;
+        switch (this.isMole) {
             case true:
                 pile.graphics.use(Resources.Mole.toSprite());
                 break;
@@ -52,18 +49,16 @@ export class Game extends Engine {
 
         pile.pos.x = Math.random() * this.drawWidth;
         pile.pos.y = Math.random() * this.drawHeight;
-
     }
 
-    handlePointerDown(pile, isMole) {
+    handlePointerDown(event) {
         console.log('pointer down!');
-        if (isMole) {
+        if (this.isMole) {
             this.score++;
         } else {
             this.score--;
         }
         this.scoreLabel.text = `Score: ${this.score}`;
-        pile.kill();
     }
 }
 
