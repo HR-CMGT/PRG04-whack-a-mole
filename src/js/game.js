@@ -35,7 +35,7 @@ export class Game extends Engine {
     spawnPile() {
         const pile = new Actor();
         this.add(pile);
-        pile.on('pointerdown', (event) => this.handlePointerDown(event));
+        pile.on('pointerdown', () => this.handlePointerDown());
         
         this.isMole = Math.random() > 0.5;
         switch (this.isMole) {
@@ -51,7 +51,7 @@ export class Game extends Engine {
         pile.pos.y = Math.random() * this.drawHeight;
     }
 
-    handlePointerDown(event) {
+    handlePointerDown() {
         console.log('pointer down!');
         if (this.isMole) {
             this.score++;
