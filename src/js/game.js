@@ -1,11 +1,12 @@
 import '../css/style.css';
-import { Actor, Engine, Font, Label, vec } from "excalibur";
-import { ResourceLoader, Resources } from './resources.js';
+import {Actor, Engine, Font, Label, Vector} from "excalibur";
+import {ResourceLoader, Resources} from './resources.js';
 
 export class Game extends Engine {
 
     score = 0;
     scoreLabel;
+    isMole;
 
     constructor() {
         super({
@@ -20,7 +21,7 @@ export class Game extends Engine {
 
         this.scoreLabel = new Label({
             text: 'Score: 0',
-            pos: vec(this.drawWidth / 2, 25),
+            pos: new Vector(this.drawWidth / 2, 25),
             font: new Font({ size: 30 }),
         });
         this.add(this.scoreLabel);
@@ -35,13 +36,12 @@ export class Game extends Engine {
     }
 
     spawnPile() {
-        const isMole = Math.random() > 0.5;
-
         const pile = new Actor();
         this.add(pile);
-        pile.on('pointerdown', (evt) => this.handlePointerDown(pile, isMole));
+        pile.on('pointerdown', () => this.handlePointerDown());
 
-        switch (isMole) {
+        this.isMole = Math.random() > 0.5;
+        switch (this.isMole) {
             case true:
                 pile.graphics.use(Resources.Mole.toSprite());
                 break;
@@ -52,18 +52,16 @@ export class Game extends Engine {
 
         pile.pos.x = Math.random() * this.drawWidth;
         pile.pos.y = Math.random() * this.drawHeight;
-
     }
 
-    handlePointerDown(pile, isMole) {
+    handlePointerDown() {
         console.log('pointer down!');
-        if (isMole) {
+        if (this.isMole) {
             this.score++;
         } else {
             this.score--;
         }
         this.scoreLabel.text = `Score: ${this.score}`;
-        pile.kill();
     }
 }
 
