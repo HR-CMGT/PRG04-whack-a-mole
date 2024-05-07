@@ -48,18 +48,14 @@ export class Game extends Engine {
 
         pile.pos.y = Math.random() * this.drawHeight;
 
-        pile.on('pointerdown', () => this.handlePointerDown(isMole));
-    }
-
-
-    handlePointerDown(isMole) {
-        console.log('pointer down!');
-        if (isMole) {
-            this.score++;
-        } else {
-            this.score--;
-        }
-        this.scoreLabel.text = `Score: ${this.score}`;
+        pile.on('pointerdown', () => {
+            if (isMole) {
+                this.score++;
+            } else {
+                this.score--;
+            }
+            this.scoreLabel.text = `Score: ${this.score}`;
+        });
     }
 }
 
